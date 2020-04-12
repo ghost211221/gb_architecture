@@ -14,9 +14,6 @@ class AbstractItem(ABC):
 
 class Bill(AbstractItem):
     def __init__(self, dataIn:dict={}):
-        print("dataIn:")
-        print(dataIn)
-        print("=====================================")
         self.dateTime = None
         self.discount = None
         self.discountSum = None
@@ -37,7 +34,7 @@ class Bill(AbstractItem):
             self.setAttr("fiscalDocNum", dataIn, "fiscalDocumentNumber")
             self.setAttr("fiscalDriveNum", dataIn, "fiscalDriveNumber")
             self.setAttr("fiscalSign", dataIn, "fiscalSign")
-            self.setAttr("retailAddr", dataIn, "dateTime")
+            self.setAttr("retailAddr", dataIn, "retailAddr")
             self.setAttr("shopName", dataIn, "user")
             self.setAttr("shopINN", dataIn, "userInn")
 
