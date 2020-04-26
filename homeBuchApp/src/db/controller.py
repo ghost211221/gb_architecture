@@ -25,6 +25,9 @@ class ProductCategories(Base):
     def __repr__(self):
         return f'<ProductCategory({self.name}, {self.comment})>'
 
+    def get_id(self):
+        return self.id
+
 class ProductSubCategories(Base):
     __tablename__ = 'productsubcategories'
 
@@ -44,6 +47,9 @@ class ProductSubCategories(Base):
     def __repr__(self):
         return f'<ProductSubCategory({self.category}, {self.name}, {self.comment})>'
 
+    def get_id(self):
+        return self.id
+
 class Shops(Base):
     __tablename__ = 'shops'
 
@@ -62,6 +68,9 @@ class Shops(Base):
     def __repr__(self):
         return f'<Shop({self.name}, {self.inn}, {self.address}, {self.comment})>'
 
+    def get_id(self):
+        return self.id
+
 class Bills(Base):
     __tablename__ = 'bills'
 
@@ -78,11 +87,14 @@ class Bills(Base):
         self.fiscalNum = fiscalNum
         self.dateTime = dateTime
         self.shop = shop
-        self.total = total
+        self.total = total / 100
         self.comment = comment
 
     def __repr__(self):
         return f'<Bill({self.fiscalNum}, {self.dateTime}, {self.shop}, {self.total}, {self.comment})>'
+
+    def get_id(self):
+        return self.id
 
 class Products(Base):
     __tablename__ = 'products'
@@ -105,13 +117,16 @@ class Products(Base):
         self.category = category
         self.subcategory = subcategory
         self.shop = shop
-        self.price = price
+        self.price = price / 100
         self.date = date
         self.comment = comment
 
     def __repr__(self):
         return f'<Product({self.name}, {self.category}, {self.subcategory}, {self.shop}, \
                           {self.price}, {self.date}, {self.comment})>'
+
+    def get_id(self):
+        return self.id
 
 
 class Purchases(Base):
@@ -131,11 +146,29 @@ class Purchases(Base):
         self.product = product
         self.bill = bill
         self.quantity = quantity
-        self.total = total
+        self.total = total / 100
         self.comment = comment
 
     def __repr__(self):
-        return f'<Purcahe({self.product}, {self.bill}, {self.quantity}, {self.comment})>'
+        return f'<Purchase({self.product}, {self.bill}, {self.quantity}, {self.comment})>'
+
+    def get_id(self):
+        return self.id
+
+class IdentityMap():
+    objects_map = {}
+
+    @classmethod
+    def add_object(cls, modelName, objectIn):
+        if objectIn.get_id() not in cls.objects_map[modelName].keys():
+           cls.objects_map[modelName][objectIn.get_id()] = objectIn
+
+    @classmethod
+    def get_object(cls, modelName, key):
+        if modelName in cls.objects_map.keys():
+            if key in cls.objects_map[modelName].keys():
+                return cls.objects_map[modelName][key]
+        return None
 
 class Controller():
     __metaclass__ = Singleton
@@ -192,8 +225,12 @@ class Controller():
                 self.__addProduct(product)
                 self.__addPurchase(product)
 
-        print(self.session.query(Shops).all())
-        print(self.session.query(Bills).all())
-        print(self.session.query(Products).all())
-        print(self.session.query(Purchases).all())
+    def getWholeExpenses(self):
+        """ расчет всех расходов за все время """
+        bills = self.session.query(Bills)
+        total = 0
+        for bill in bills:
+            total += bill.total
+
+        return total
 

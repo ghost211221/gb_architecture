@@ -19,6 +19,7 @@ class AbstractBillGetter(ABC):
 class EmailGetter(AbstractBillGetter):
     __metaclass__ = Singleton
     def __init__(self, login=None, passwd=None, imap=None) -> None:
+        print(login, passwd, imap)
         self.__login = None
         self.__passwd = None
         self.__imap = imap
@@ -40,6 +41,7 @@ class EmailGetter(AbstractBillGetter):
 
     def __emailLogIn(self):
         try:
+            print(self.__login, self.__passwd, self.__imap)
             self.__mail = imaplib.IMAP4_SSL(self.__imap)
             self.__mail.login(self.__login, self.__passwd)
         except Exception as e:
@@ -110,10 +112,10 @@ if __name__ == "__main__":
     pp = pprint.PrettyPrinter(indent=4)
 
     # почту светить не буду, работает, возващает список объектов
-    # EmailBillGetter = EmailGetter('', '', 'imap.yandex.ru')
-    # bills = EmailBillGetter.getBills()
+    EmailBillGetter = EmailGetter('', '', '')
+    bills = EmailBillGetter.getBills()
 
-    # pp.pprint(bills)
+    pp.pprint(bills)
     
     copyfile("../billsTemp/19_05_2019_08_48_404185210208576816315.json",
              "../bills/19_05_2019_08_48_404185210208576816315.json"

@@ -17,6 +17,8 @@ if __name__ == "__main__":
              "../bills/19_05_2019_08_48_404185210208576816315.json"
         )
 
+    # EmailBillGetter = EmailGetter(login='', passwd='', imap='')
+    # bills = EmailBillGetter.getBills()
     FilesGetter = FilesGetter()
     bills = FilesGetter.getBills()
     print(type(bills))
@@ -30,3 +32,7 @@ if __name__ == "__main__":
     controllerInst = Controller(db_engine)
 
     controllerInst.parseBill(bills)
+
+    print("whole expenses for whole time:")
+    print(controllerInst.getWholeExpenses())
+
